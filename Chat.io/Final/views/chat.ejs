@@ -27,12 +27,10 @@
       </div>
     </div>
 
-    <div id="data" data-nick="<%= data.nick %>" data-color="<%=data.color%>"></div>
-
-    <!-- Socket.IO Config -->
-    <script src="/socket.io/socket.io.js"></script>
-
+    <div id="dados" data-nick="<%= dados.nick %>" data-color="<%= dados.color %>"></div>
+    
     <% include partials/footer.ejs %>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/chat.js"></script>
   </body>
 </html>

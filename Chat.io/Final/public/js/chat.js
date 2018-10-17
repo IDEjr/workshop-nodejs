@@ -1,29 +1,27 @@
 const socket = io();
-
-const form = document.querySelector('form');
-const msg = document.querySelector('#m');
-const feed = document.querySelector('#feed');
-const ejsData = document.querySelector('#data');
 const header = document.querySelector('#chat-header');
+const dados = document.querySelector('#dados');
+const feed = document.querySelector('#feed');
+const form = document.querySelector('#msg-input');
+const msg = document.querySelector('#m');
 
-// Define a cor do header conforme a cor do usuário
-header.style.backgroundColor = ejsData.dataset.color;
+header.style.backgroundColor = dados.dataset.color;
 
 form.addEventListener('submit', (event) => {
-    if(msg.value != ""){
+    if(msg != ''){
         event.preventDefault();
         const li = document.createElement('li');
-        li.innerHTML = `<strong style="color:${ejsData.dataset.color}"> ${ejsData.dataset.nick}:</strong> ${ msg.value}`;
+        li.innerHTML = `<strong style='color: ${dados.dataset.color}'> ${dados.dataset.nick}: </strong> ${msg.value}`;
         feed.appendChild(li);
-        socket.emit('chat message', {msg: msg.value, nick: ejsData.dataset.nick, color: ejsData.dataset.color});
+        socket.emit('chat message', {msg: msg.value, nick: dados.dataset.nick, color: dados.dataset.color});
         msg.value = '';
     }
     return false;
 }, true);
 
-socket.on("chat message", (data) => {
-    console.log(data);
+
+socket.on('chat message', (data) => {
     const li = document.createElement('li');
-    li.innerHTML = `<strong style='color:${data.color}'>${data.nick}: </strong>${data.msg}`;
+    li.innerHTML = `<strong style='color: ${data.color}'> ${data.nick}: </strong> ${data.msg}`;
     feed.appendChild(li);
 });

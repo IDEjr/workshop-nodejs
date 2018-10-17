@@ -1,35 +1,32 @@
-//Requirements
-var express = require("express");
-var app = express();
-var http = require("http").Server(app);
-var io = require("socket.io")(http);
-var bodyParser = require("body-parser");
-
-//Configs
-app.set("view engine", "ejs");
-app.use(express.static("public"));
-
-//Middlewares
-app.use(bodyParser.urlencoded({extended: true}));
-
-//Routes
-app.get("/", function(req, res){
-  res.render("index");
-});
-
-app.post("/entrar", function(req, res){
-  res.render("chat", {data: req.body});
-});
-
-//Socket.IO
-io.on("connection", function(socket){
-  socket.on("chat message", function(data){
-    io.emit("chat message", {msg: data.msg, nick: data.nick, color: data.color});
-  });
-});
-
-//Server listen
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 const port = 3000;
-app.listen(port, function(){
-  console.log(`Server up and running at http://localhost:${port}`);
+
+const morgan = require('morgan');
+
+app.use(morgan('dev'));
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
+
+app.get('/', (req, res) => {
+    res.render('index.ejs');
+});
+
+app.post('/chat', (req, res) => {
+    res.render('chat.ejs', {dados: req.body});
+});
+
+// Socket.io
+io.on('connection', (socket) => {
+    socket.on('chat message', (data) => {
+        socket.broadcast.emit('chat message', {msg: data.msg, nick: data.nick, color: data.color});
+    });
+});
+
+http.listen(port, () => {
+    console.log('Servidor rodando na porta ' + port);
 });
